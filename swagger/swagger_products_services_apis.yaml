@@ -39,10 +39,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras.
                         type: object
                         required:
                           - name
@@ -175,7 +177,7 @@ paths:
                                                   example: TRANSFERENCIA_TED_PESSOAL_OU_PRESENCIAL
                                                 code:
                                                   type: string
-                                                  description: 'Lista das Siglas de identificação do Serviço Prioritário, segundo Resolução 3.919 do Bacen.'
+                                                  description: 'Sigla de identificação do Serviço Prioritário, segundo Resolução 3.919 do Bacen.'
                                                   enum:
                                                     - CADASTRO
                                                     - 2_VIA_CARTAO_DEBITO
@@ -217,6 +219,7 @@ paths:
                                                     - EMISSAO_SEGUNDA_VIA
                                                     - TARIFA_PAGAMENTO_CONTAS
                                                     - SMS
+                                                  example: CADASTRO
                                                 chargingTriggerInfo:
                                                   type: string
                                                   maxLength: 2000
@@ -229,11 +232,13 @@ paths:
                                                     $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/prices/items'
                                                   minItems: 4
                                                   maxItems: 4
-                                                  description: Lista distribuição preços tarifas de serviços
+                                                  description: 'Valor da mediana da tarifa, relativa ao serviço ofertado, informado no período'
                                                 minimum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/minimum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/minimum'
+                                                  description: Valor mínimo apurado para a tarifa de serviços sobre a base de clientes no mês de referência
                                                 maximum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/maximum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/maximum'
+                                                  description: Valor máximo apurado para a tarifa de serviços sobre a base de clientes no mês de referência
                                             minItems: 1
                                             maxItems: 40
                                             description: Lista das Tarifas cobradas sobre Serviços Prioritários
@@ -253,18 +258,18 @@ paths:
                                                   type: string
                                                   maxLength: 250
                                                   pattern: \w*\W*
-                                                  description: Nome do Serviço que incide sobre tipo de conta (Campo Livre)
+                                                  description: Nome atribuído a Outros Serviços disponíveis para os tipos de contas.
                                                   example: Evento personalizado
                                                 code:
                                                   type: string
                                                   maxLength: 100
-                                                  description: Siglas de identificação do Serviço (Campo Livre)
+                                                  description: Sigla de identificação de Outros Serviços que incidem sobre os tipos de contas.
                                                   example: TALAO_DOMICILIO
                                                 chargingTriggerInfo:
                                                   type: string
                                                   maxLength: 2000
                                                   pattern: \w*\W*
-                                                  description: Fatos geradores de cobrança que incidem sobre outros serviços para pessoa natural. (Campo Livre)
+                                                  description: Outros Fatos geradores de cobrança referentes aos Outros Serviços que incidem sobre as contas comercializadas.
                                                   example: Cobrança devido a evento personalizado
                                                 prices:
                                                   type: array
@@ -272,11 +277,13 @@ paths:
                                                     $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/prices/items'
                                                   minItems: 4
                                                   maxItems: 4
-                                                  description: Lista distribuição preços tarifas de serviços
+                                                  description: Valor da tarifa cobrada referente aos Outros Serviços.
                                                 minimum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/minimum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/minimum'
+                                                  description: Valor mínimo cobrado para a tarifa de serviços sobre a base de clientes no mês de referência.
                                                 maximum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/maximum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/maximum'
+                                                  description: Valor máximo cobrado para a tarifa de serviços sobre a base de clientes no mês de referência.
                                             minItems: 1
                                             description: 'Lista das Tarifas cobradas sobre outros Serviços, que não prioritários'
                                       serviceBundles:
@@ -370,40 +377,26 @@ paths:
                                                   currency:
                                                     $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/termsConditions/properties/minimumBalance/properties/currency'
                                                   customers:
-                                                    $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalLoans/items/properties/interestRates/items/properties/applications/items/properties/customers'
+                                                    type: object
+                                                    required:
+                                                      - rate
+                                                    properties:
+                                                      rate:
+                                                        type: string
+                                                        description: |
+                                                          Percentual de clientes em cada faixa.
+                                                        pattern: '(^[0-9](\.[0-9]{4})$|^NA$)'
+                                                        example: '0.1500'
+                                                        maxLength: 6
                                               minItems: 4
                                               maxItems: 4
                                               description: Lista distribuição preços tarifas de serviços
                                             minimum:
-                                              type: object
-                                              required:
-                                                - value
-                                                - currency
-                                              properties:
-                                                value:
-                                                  type: string
-                                                  pattern: '^((\d{1,9}\.\d{2}){1}|NA)$'
-                                                  maxLength: 12
-                                                  x-cds-type: AmountString
-                                                  description: Valor mínimo apurado para a tarifa de serviços sobre a base de clientes no mês de referência
-                                                  example: '1350.00'
-                                                currency:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/termsConditions/properties/minimumBalance/properties/currency'
+                                              $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/minimum'
+                                              description: Valor mínimo cobrado para a tarifa de serviços sobre a base de clientes no mês de referência.
                                             maximum:
-                                              type: object
-                                              required:
-                                                - value
-                                                - currency
-                                              properties:
-                                                value:
-                                                  type: string
-                                                  pattern: '^((\d{1,9}\.\d{2}){1}|NA)$'
-                                                  maxLength: 12
-                                                  x-cds-type: AmountString
-                                                  description: Valor máximo apurado para a tarifa de serviços sobre a base de clientes no mês de referência
-                                                  example: '8800.00'
-                                                currency:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/termsConditions/properties/minimumBalance/properties/currency'
+                                              $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/maximum'
+                                              description: Valor máximo cobrado para a tarifa de serviços sobre a base de clientes no mês de referência.
                                         minItems: 1
                                         description: Lista dos Pacotes de serviços
                                       openingClosingChannels:
@@ -454,6 +447,7 @@ paths:
                                           - closingProcessInfo
                                         properties:
                                           minimumBalance:
+                                            description: 'Saldo mínimo exigido nos Termos e condições contratuais, que regem as contas comercializadas.'
                                             type: object
                                             required:
                                               - value
@@ -482,7 +476,7 @@ paths:
                                             type: string
                                             maxLength: 2000
                                             pattern: \w*\W*
-                                            description: 'Procedimentos de encerramento para o tipo de conta tratado. Possibilidade de inscrição da URL. Endereço eletrônico de acesso ao canal. p.ex. ''https://example.com/mobile-banking'''
+                                            description: Procedimentos de encerramento para o tipo de conta tratado. Possibilidade de inscrição da URL. Endereço eletrônico de acesso ao canal.
                                             example: 'https://example.com/mobile-banking'
                                       incomeRate:
                                         type: object
@@ -495,7 +489,7 @@ paths:
                                             maxItems: 1
                                             description: |
                                               Descrição da Remuneração especificamente para Conta de Poupança. Deve ser preenchido com a determinação legal vigente.
-                                              Restrição: De preenchimento obrigatório para CONTA_POUPANCA.
+                                              Restrição: De preenchimento obrigatório para CONTA_POUPANCA. Para os demais Tipos preencher com NA
                                             example: 'Para depósitos até 03/05/2012 – remuneração trimestral de 1,5% + TR, sempre creditada no aniversário da conta; Para depósitos a partir de 04/05/2012 – 70% da Selic + TR quando a Selic for igual ou inferior a 8,5% ao ano e 1,5% + TR caso a Selic seja superior a 8,5%.'
                                           prepaidPaymentAccount:
                                             type: string
@@ -513,6 +507,259 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        name: Empresa A1
+                        cnpjNumber: '45086338000178'
+                        urlComplementaryList: 'https://empresaa1.com/branches-banking'
+                        personalAccounts:
+                          - type: CONTA_DEPOSITO_A_VISTA
+                            fees:
+                              priorityServices:
+                                - name: TRANSFERENCIA_TED_PESSOAL_OU_PRESENCIAL
+                                  code: TED_PESSOAL
+                                  chargingTriggerInfo: 'Realização de transferência de recursos por meio de Transferência Eletrônica Disponível (TED) em guichê de caixa ou mediante outras formas de atendimento pessoal, incluindo o atendimento telefônico realizado por atendente'
+                                  prices:
+                                    - interval: 1_FAIXA
+                                      value: '35.40'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      value: '45.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      value: '52.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      value: '69.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3000'
+                                  minimum:
+                                    value: '19.00'
+                                    currency: BRL
+                                  maximum:
+                                    value: '88.00'
+                                    currency: BRL
+                                - name: FORNECIMENTO_2_VIA_CARTAO_FUNCAO_DEBITO
+                                  code: 2_VIA_CARTAO_DEBITO
+                                  chargingTriggerInfo: 'Confecção e emissão de novo cartão com função débito, restrito a casos de pedidos de reposição formulados pelo detentor da conta, decorrente de perda, roubo, furto, danificação e outros motivos não imputáveis à instituição emitente'
+                                  prices:
+                                    - interval: 1_FAIXA
+                                      value: '37.40'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      value: '45.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      value: '52.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      value: '69.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3000'
+                                      minimum:
+                                        value: '35.00'
+                                        currency: BRL
+                                      maximum:
+                                        value: '72.00'
+                                        currency: BRL
+                              otherServices:
+                                - name: Entrega de talão de cheque em domícilio
+                                  code: TALAO_DOMICILIO
+                                  chargingTriggerInfo: Por remessa
+                                  prices:
+                                    - interval: 1_FAIXA
+                                      value: '30.40'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      value: '45.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      value: '62.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      value: '69.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3000'
+                                  minimum:
+                                    value: '19.00'
+                                    currency: BRL
+                                  maximum:
+                                    value: '88.00'
+                                    currency: BRL
+                                - name: 2ª via de recibo de transação eletrônica
+                                  code: SEGUNDA_RECIBO_TE
+                                  chargingTriggerInfo: Por documento
+                                  prices:
+                                    - interval: 1_FAIXA_VALOR
+                                      value: '37.40'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA_VALOR
+                                      value: '45.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA_VALOR
+                                      value: '62.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA_VALOR
+                                      value: '69.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3000'
+                                  minimum:
+                                    value: '15.00'
+                                    currency: BRL
+                                  maximum:
+                                    value: '72.00'
+                                    currency: BRL
+                              serviceBundles:
+                                - name: Conta de depósitos à vista Movimentação com cartão (sem cheque)
+                                  services:
+                                    - code: CADASTRO
+                                      chargingTriggerInfo: 'Realização de pesquisa em serviços de proteção ao crédito, base de dados e informações cadastrais, e tratamento de dados e informações necessários ao início relacionamento decorrente da abertura de conta de depósitos à vista ou de poupança ou contratação de operação de crédito ou de arrendamento mercantil, não podendo ser cobrada cumulativamente'
+                                      eventLimitQuantity: '1'
+                                      freeEventQuantity: '0'
+                                    - code: SAQUE_TERMINAL
+                                      chargingTriggerInfo: Saque em terminal de autoatendimento além do número de saques permitidos gratuitamente por mês. Nas 'contas eletrônicas' não pode ser cobrada tarifa para este canal de entrega
+                                      eventLimitQuantity: '999999'
+                                      freeEventQuantity: '8'
+                                    - code: CHEQUE_VISADO
+                                      chargingTriggerInfo: Procedimentos para registro e bloqueio do saldo em conta de depósitos à vista
+                                      eventLimitQuantity: '999999'
+                                      freeEventQuantity: '4'
+                                    - code: CHEQUE_ADMINISTRATIVO
+                                      chargingTriggerInfo: Emissão de cheque administrativo
+                                      eventLimitQuantity: '999999'
+                                      freeEventQuantity: '2'
+                                  prices:
+                                    - interval: 1_FAIXA
+                                      monthlyFee: '43.40'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      monthlyFee: '55.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      monthlyFee: '62.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      monthlyFee: '69.0'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3000'
+                                  minimum:
+                                    value: '19.00'
+                                    currency: BRL
+                                  maximum:
+                                    value: '88.00'
+                                    currency: BRL
+                                - name: Conta de depósitos à vista -Pacote XXX
+                                  services:
+                                    - code: Serviço 1
+                                      chargingTriggerInfo: 'Realização de pesquisa em serviços de proteção ao crédito, base de dados e informações cadastrais, e tratamento de dados e informações necessários ao início relacionamento decorrente da abertura de conta de depósitos à vista ou de poupança ou contratação de operação de crédito ou de arrendamento mercantil, não podendo ser cobrada cumulativamente'
+                                      eventLimitQuantity: '999999'
+                                      freeEventQuantity: '999999'
+                                    - code: Serviço 2
+                                      chargingTriggerInfo: Saque em terminal de autoatendimento além do número de saques permitidos gratuitamente por mês. Nas 'contas eletrônicas' não pode ser cobrada tarifa para este canal de entrega
+                                      eventLimitQuantity: '999999'
+                                      freeEventQuantity: '8'
+                                    - code: Serviço 3
+                                      chargingTriggerInfo: Procedimentos para registro e bloqueio do saldo em conta de depósitos à vista
+                                      eventLimitQuantity: '999999'
+                                      freeEventQuantity: '4'
+                                    - code: Serviço 4
+                                      chargingTriggerInfo: Emissão de cheque administrativo
+                                      eventLimitQuantity: '999999'
+                                      freeEventQuantity: '2'
+                                  prices:
+                                    - interval: 1_FAIXA_VALOR
+                                      monthlyFee: '30.40'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA_VALOR
+                                      monthlyFee: '45.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA_VALOR
+                                      monthlyFee: '62.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA_VALOR
+                                      monthlyFee: '69.0'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3000'
+                                  minimum:
+                                    value: '25.00'
+                                    currency: BRL
+                                  maximum:
+                                    value: '72.00'
+                                    currency: BRL
+                              openingClosingChannels:
+                                - DEPENDENCIAS_PROPRIAS
+                                - CORRESPONDENTES_BANCARIOS
+                                - INTERNET_BANKING
+                                - MOBILE_BANKING
+                                - CENTRAL_TELEFONICA
+                                - CHAT
+                                - OUTROS
+                              additionalInfo: WhatsApp
+                              transactionMethods:
+                                - MOVIMENTACAO_CARTAO
+                              termsConditions:
+                                minimumBalance:
+                                  value: '200.00'
+                                  currency: BRL
+                                elegibilityCriteriaInfo: 'https://empresaa1.com/Accounts_closingProcess'
+                                closingProcessInfo: 'https://empresaa1.com/Accounts_closingProcess'
+                              incomeRate:
+                                - savingAccount: NA
+                                  prepaidPaymentAccount: NA
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/personal-accounts'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/personal-accounts'
+                    prev: string
+                    next: string
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/personal-accounts'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /business-accounts:
     get:
       tags:
@@ -537,10 +784,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras.
                         type: object
                         required:
                           - name
@@ -630,18 +879,45 @@ paths:
                                                         x-cds-type: AmountString
                                                         description: |
                                                           Valor da mediana de cada faixa relativa ao serviço ofertado, informado no período, conforme Res nº 32 BCB, 2020. p.ex. '45.00' (representa um valor monetário. p.ex: 1547368.92. Este valor, considerando que a moeda seja BRL, significa R$ 1.547.368,92. O único separador presente deve ser o '.' (ponto) para indicar a casa decimal. Não deve haver separador de milhar)
-                                                        example: 2000
+                                                        example: '2000.00'
                                                       currency:
                                                         $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/termsConditions/properties/minimumBalance/properties/currency'
                                                       customers:
-                                                        $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalLoans/items/properties/interestRates/items/properties/applications/items/properties/customers'
+                                                        $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/prices/items/properties/customers'
+                                                        description: Percentual de clientes em cada faixa
                                                   minItems: 4
                                                   maxItems: 4
                                                   description: Lista distribuição preços tarifas de serviços
                                                 minimum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/minimum'
+                                                  type: object
+                                                  required:
+                                                    - value
+                                                    - currency
+                                                  properties:
+                                                    value:
+                                                      type: string
+                                                      pattern: '^((\d{1,9}\.\d{2}){1}|NA)$'
+                                                      maxLength: 12
+                                                      x-cds-type: AmountString
+                                                      description: Valor mínimo apurado para a tarifa de serviços sobre a base de clientes no mês de referência
+                                                      example: '1350.00'
+                                                    currency:
+                                                      $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/termsConditions/properties/minimumBalance/properties/currency'
                                                 maximum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/maximum'
+                                                  type: object
+                                                  required:
+                                                    - value
+                                                    - currency
+                                                  properties:
+                                                    value:
+                                                      type: string
+                                                      pattern: '^((\d{1,9}\.\d{2}){1}|NA)$'
+                                                      maxLength: 12
+                                                      x-cds-type: AmountString
+                                                      description: Valor máximo apurado para a tarifa de serviços sobre a base de clientes no mês de referência
+                                                      example: '8800.00'
+                                                    currency:
+                                                      $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/termsConditions/properties/minimumBalance/properties/currency'
                                             minItems: 1
                                             description: Lista das Tarifas cobradas sobre Serviços
                                       serviceBundles:
@@ -685,6 +961,123 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - name: Empresa A1
+                          cnpjNumber: '45086338000178'
+                          urlComplementaryList: 'https://empresaa1.com/branches-banking'
+                          businessAccounts:
+                            - type: CONTA_DEPOSITO_A_VISTA
+                              fees:
+                                services:
+                                  name: Entrega de talão de cheque em domícilio
+                                  code: TALAO_DOMICILIO
+                                  chargingTriggerInfo: Por remessa
+                                  prices:
+                                    - interval: 1_FAIXA
+                                      value: '55.40'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      value: '65.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      value: '69.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      value: '72.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3000'
+                                  minimum:
+                                    value: '49.00'
+                                    currency: BRL
+                                  maximum:
+                                    value: '88.00'
+                                    currency: BRL
+                              serviceBundles:
+                                name: Conta de depósitos à vista Movimentação com cartão (sem cheque)
+                                services:
+                                  - code: CADASTRO
+                                    chargingTriggerInfo: 'Realização de pesquisa em serviços de proteção ao crédito, base de dados e informações cadastrais, e tratamento de dados e informações necessários ao início relacionamento decorrente da abertura de conta de depósitos à vista ou de poupança ou contratação de operação de crédito ou de arrendamento mercantil, não podendo ser cobrada cumulativamente'
+                                    eventLimitQuantity: '1'
+                                    freeEventQuantity: '0'
+                                  - code: SAQUE_TERMINAL
+                                    chargingTriggerInfo: Saque em terminal de autoatendimento além do número de saques permitidos gratuitamente por mês. Nas 'contas eletrônicas' não pode ser cobrada tarifa para este canal de entrega
+                                    eventLimitQuantity: '999999'
+                                    freeEventQuantity: '8'
+                                  - code: CHEQUE_VISADO
+                                    chargingTriggerInfo: Procedimentos para registro e bloqueio do saldo em conta de depósitos à vista correspondente ao valor do cheque
+                                    eventLimitQuantity: '999999'
+                                    freeEventQuantity: '4'
+                                  - code: CHEQUE_ADMINISTRATIVO
+                                    chargingTriggerInfo: Emissão de cheque administrativo
+                                    eventLimitQuantity: '999999'
+                                    freeEventQuantity: '2'
+                                prices:
+                                  - interval: 1_FAIXA
+                                    monthlyFee: '50.00'
+                                    currency: BRL
+                                    customers:
+                                      rate: '0.1500'
+                                  - interval: 2_FAIXA
+                                    monthlyFee: '65.40'
+                                    currency: BRL
+                                    customers:
+                                      rate: '0.3500'
+                                  - interval: 3_FAIXA
+                                    monthlyFee: '75.40'
+                                    currency: BRL
+                                    customers:
+                                      rate: '0.2000'
+                                  - interval: 4_FAIXA
+                                    monthlyFee: '83.00'
+                                    currency: BRL
+                                    customers:
+                                      rate: '0.3000'
+                                minimum:
+                                  value: '45.00'
+                                  currency: BRL
+                                maximum:
+                                  value: '87.00'
+                                  currency: BRL
+                              openingClosingChannels:
+                                - DEPENDENCIAS_PROPRIAS
+                                - CORRESPONDENTES_BANCARIOS
+                                - INTERNET_BANKING
+                                - MOBILE_BANKING
+                                - CENTRAL_TELEFONICA
+                                - CHAT
+                                - OUTROS
+                              additionalInfo: WhastApp
+                              transactionMethods:
+                                - MOVIMENTACAO_CARTAO
+                              termsConditions:
+                                minimumBalance:
+                                  value: '500.00'
+                                  currency: BRL
+                                elegibilityCriteriaInfo: 'https://empresaa1.com/Accounts_elegebilityCriteria'
+                                closingProcessInfo: 'https://empresaa1.com/Accounts_closingProcess'
+                              incomeRate:
+                                savingAccount: NA
+                                prepaidPaymentAccount: NA
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/business-accounts'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/business-accounts'
+                    prev: ''
+                    next: ''
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/business-accounts'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /personal-loans:
     get:
       tags:
@@ -721,10 +1114,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras
                         type: object
                         required:
                           - name
@@ -827,9 +1222,9 @@ paths:
                                                   minItems: 4
                                                   maxItems: 4
                                                 minimum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/minimum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/minimum'
                                                 maximum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/maximum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/maximum'
                                             minItems: 1
                                             description: Lista das Tarifas cobradas sobre Serviços
                                         description: Objeto que reúne informações de tarifas de serviços
@@ -894,7 +1289,9 @@ paths:
                                                       - 4_FAIXA
                                                     description: |
                                                       Faixas para cobrança da taxa efetiva aplicada pela contratação do crédito, no intervalo informado: 1ª faixa, 2ª faixa, 3ª faixa e 4ª faixa. Segundo Normativa nº32 de 2020: 'Distribuição de frequência relativa dos valores de tarifas e taxas de juros cobrados dos clientes, de que trata o § 2º do art. 3º da Circular nº 4.015, de 2020, deve dar-se com base em quatro faixas de igual tamanho, com explicitação dos valores sobre a mediana e o percentual de clientes em cada uma dessas faixas.
+                                                    example: 1_FAIXA
                                                   indexer:
+                                                    description: Percentual que corresponde a mediana (taxa efetiva) cobrada do cliente
                                                     type: object
                                                     properties:
                                                       rate:
@@ -905,17 +1302,8 @@ paths:
                                                           Percentual que corresponde a mediana da taxa efetiva cobrada do cliente pela contratação do crédito, no intervalo informado. p.ex. '0,8700%'. A apuração pode acontecer com até 4 casas decimais. O preenchimento deve respeitar as 4 casas decimais, mesmo que venham preenchidas com zeros (representação de porcentagem p.ex: 0.1500. Este valor representa 15%. O valor 1 representa 100%)
                                                         example: '0.8700'
                                                   customers:
-                                                    type: object
-                                                    required:
-                                                      - rate
-                                                    properties:
-                                                      rate:
-                                                        type: string
-                                                        description: |
-                                                          Percentual de clientes em cada faixa.
-                                                        pattern: '(^[0-9](\.[0-9]{4})$|^NA$)'
-                                                        example: '0.1500'
-                                                        maxLength: 6
+                                                    $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/prices/items/properties/customers'
+                                                    description: Percentual de clientes em cada faixa.
                                                 required:
                                                   - interval
                                                   - indexer
@@ -1000,6 +1388,7 @@ paths:
                             description: Companies traz uma lista de todas as instituições da Marca
                   links:
                     type: object
+                    description: Referências para outros recusos da API requisitada.
                     properties:
                       self:
                         type: string
@@ -1021,6 +1410,7 @@ paths:
                         example: 'https://api.banco.com.br/open-banking/<api>/v1/<resource>'
                   meta:
                     type: object
+                    descripion: Meta informações referente a API requisitada.
                     properties:
                       totalRecords:
                         type: integer
@@ -1033,6 +1423,427 @@ paths:
                     required:
                       - totalRecords
                       - totalPages
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - cnpjNumber: '45086338000178'
+                          name: Empresa A1
+                          urlComplementaryList: 'https://empresaa1.com/branches-banking'
+                          personalLoans:
+                            - type: EMPRESTIMO_CREDITO_PESSOAL_CONSIGNADO
+                              fees:
+                                services:
+                                  - name: Crédito pessoal consignado
+                                    code: NA
+                                    chargingTriggerInfo: Tarifa cobrada sobre demanda
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '500.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '860.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '1090.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '2100.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '430.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '2200.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.15'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0187'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.2900'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7990'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0056'
+                                  maximumRate: '0.8565'
+                              requiredWarranties:
+                                - NAO_APLICAVEL
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_CREDITO_PESSOAL_SEM_CONSIGNACAO
+                              fees:
+                                services:
+                                  - name: Crédito pessoal sem consignação
+                                    code: NA
+                                    chargingTriggerInfo: 1% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '3500.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '4200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '4900.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '5006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '2290.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '5800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.10'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.1500'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.2000'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3500'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.6800'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.1450'
+                                  maximumRate: '0.6900'
+                              requiredWarranties:
+                                - HIPOTECA
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_HOME_EQUITY
+                              fees:
+                                services:
+                                  - name: 'Avaliação, Reavaliação e Substituição de Bens Recebidos em Garantia para Empréstimos com Garantia de Imóvel'
+                                    code: NA
+                                    chargingTriggerInfo: 2% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '2000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '5072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '7006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '1350.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '8800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.13'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0889'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - ALIENACAO_FIDUCIARIA
+                                - HIPOTECA
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_MICROCREDITO_PRODUTIVO_ORIENTADO
+                              fees:
+                                services:
+                                  - name: Taxa de Abertura de Crédito - Microcrédito Produtivo Orientado
+                                    code: NA
+                                    chargingTriggerInfo: 3% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '1000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '1200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '3072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '7020.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '560.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '8000.00'
+                                      currency: BRL
+                                  - name: Microcrédito Pessoa Natural
+                                    code: NA
+                                    chargingTriggerInfo: 2% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '2000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '5072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '3006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '1890.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '5800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.10'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7680'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.8100'
+                              requiredWarranties:
+                                - OUTRAS_GARANTIAS_NAO_FIDEJUSSORIAS
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_CHEQUE_ESPECIAL
+                              fees:
+                                services:
+                                  - name: Adiantamento a Depositantes / Excesso Limite
+                                    code: NA
+                                    chargingTriggerInfo: '0,25% sobre o excedente do limite acima de R$500,00'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '1700.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '2200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '4030.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '5030.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '770.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '5800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: OUTRAS_TAXAS_POS_FIXADAS
+                                  rate: '0.20'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0889'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - GARANTIA_FIDEJUSSORIA
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_CONTA_GARANTIDA
+                              fees:
+                                services:
+                                  - name: 'Descoberto em C/C, Conta garantida'
+                                    code: NA
+                                    chargingTriggerInfo: 'Tarifa R$63,00'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '345.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '479.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '776.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '1300.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '110.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '1390.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: OUTRAS_TAXAS_POS_FIXADAS
+                                  rate: '0.18'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7680'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.8100'
+                              requiredWarranties:
+                                - GARANTIA_FIDEJUSSORIA
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                    prev: string
+                    next: string
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /business-loans:
     get:
       tags:
@@ -1057,10 +1868,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras.
                         type: object
                         required:
                           - name
@@ -1154,6 +1967,426 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - cnpjNumber: '45086338000178'
+                          name: Empresa A1
+                          urlComplementaryList: 'https://empresaa1.com/branches-banking'
+                          businessLoans:
+                            - type: EMPRESTIMO_MICROCREDITO_PRODUTIVO_ORIENTADO
+                              fees:
+                                services:
+                                  - name: Taxa de Abertura de Crédito - Microcrédito Produtivo Orientado
+                                    code: NA
+                                    chargingTriggerInfo: 3% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '2000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '5072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '7006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '1350.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '8800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateOrIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.15'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0889'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - OUTRAS_GARANTIAS_NAO_FIDEJUSSORIAS
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_CHEQUE_ESPECIAL
+                              fees:
+                                services:
+                                  - name: Cheque Especial
+                                    code: NA
+                                    chargingTriggerInfo: '0,25% sobre o excente do limite acima de R$500,00'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '2000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '5072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '6006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '1300.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '6800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateOrIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.10'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7680'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0889'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - GARANTIA_FIDEJUSSORIA
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_CONTA_GARANTIDA
+                              fees:
+                                services:
+                                  - name: 'Descoberto em C/C, Conta garantida'
+                                    code: NA
+                                    chargingTriggerInfo: 'Tarifa R$63,00'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '1500.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3800.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '4090.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '7786.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '830.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '8800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateOrIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.10'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7680'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0889'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - GARANTIA_FIDEJUSSORIA
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_CAPITAL_GIRO_PRAZO_VENCIMENTO_ATE_365_DIAS
+                              fees:
+                                services:
+                                  - name: Contratação
+                                    code: NA
+                                    chargingTriggerInfo: '(mín. R$ 100,00 máx. R$ 3.000), tarifa 3% do Contrato'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '1700.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '2200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '4030.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '5030.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '770.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '5800.00'
+                                      currency: BRL
+                                  - name: Alteração Contratual
+                                    code: NA
+                                    chargingTriggerInfo: '(mín. R$ 100,00 máx. R$ 3.000), tarifa 3% do Contrato'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '55.40'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '62.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '75.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '86.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '49.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '90.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateOrIndexer: OUTRAS_TAXAS_POS_FIXADAS
+                                  rate: '0.15'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0150'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.2240'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3090'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.6223'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0100'
+                                  maximumRate: '0.7100'
+                              requiredWarranties:
+                                - NAO_APLICAVEL
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_CAPITAL_GIRO_PRAZO_VENCIMENTO_SUPERIOR_365_DIAS
+                              fees:
+                                service:
+                                  name: Amortização/Liquidação antecipada
+                                  code: NA
+                                  chargingTriggerInfo: 2 % do Contrato
+                                  prices:
+                                    - interval: 1_FAIXA
+                                      value: '345.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      value: '479.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      value: '776.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      value: '1300.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3000'
+                                  minimum:
+                                    value: '110.00'
+                                    currency: BRL
+                                  maximum:
+                                    value: '1390.00'
+                                    currency: BRL
+                              interestRates:
+                                - referentialRateOrIndexer: OUTRAS_TAXAS_POS_FIXADAS
+                                  rate: '0.09'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0889'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - NAO_APLICAVEL
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                            - type: EMPRESTIMO_CAPITAL_GIRO_ROTATIVO
+                              fees:
+                                services:
+                                  - name: Renovação
+                                    code: NA
+                                    chargingTriggerInfo: '(mín. R$ 100 máx. R$ 1.100,00), tarifa 3% do Contrato'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '1000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3800.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '5072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '7826.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '610.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '8580.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateOrIndexer: OUTRAS_TAXAS_POS_FIXADAS
+                                  rate: '0.18'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7680'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.8100'
+                              requiredWarranties:
+                                - NAO_APLICAVEL
+                              termsConditions: 'https://empresaa1.com/personal_loans'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                    prev: string
+                    next: string
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /personal-credit-cards:
     get:
       tags:
@@ -1178,10 +2411,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras.
                         type: object
                         required:
                           - companies
@@ -1365,9 +2600,9 @@ paths:
                                                   minItems: 4
                                                   maxItems: 4
                                                 minimum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/minimum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/minimum'
                                                 maximum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/maximum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/maximum'
                                             minItems: 1
                                             maxItems: 9
                                       interest:
@@ -1436,7 +2671,7 @@ paths:
                                                           Percentual que corresponde a mediana (taxa efetiva) cobrada do cliente pela utilização do crédito rotativo, no intervalo informado.
                                                         example: 0.87
                                                       customers:
-                                                        $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalLoans/items/properties/interestRates/items/properties/applications/items/properties/customers'
+                                                        $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/prices/items/properties/customers'
                                                     required:
                                                       - interval
                                                       - indexer
@@ -1571,6 +2806,126 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - name: Empresa da Organização A1
+                          cnpjNumber: '50685362000135'
+                          urlComplementaryList: 'https://empresaa1.com/branches-banking'
+                          personalCreditCards:
+                            - name: Cartão Universitário
+                              identification:
+                                product:
+                                  type: CLASSIC_NACIONAL
+                                creditCard:
+                                  network: VISA
+                              rewardsProgram:
+                                hasRewardProgram: true
+                                rewardProgramInfo: 'https://empresaa1.com/credit_cards_rewards'
+                              fees:
+                                services:
+                                  - name: ANUIDADE_CARTAO_BASICO_NACIONAL
+                                    code: ANUIDADE_NACIONAL
+                                    chargingTriggerInfo: 'Disponibilização de rede de estabelecimentos afiliados, instalada no País, para pagamentos de bens e serviços, cobrada no máximo uma vez a cada doze meses, admitido o parcelamento da cobrança.'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '20.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '35.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '55.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '69.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '19.50'
+                                      currency: BRL
+                                    maximum:
+                                      value: '72.00'
+                                      currency: BRL
+                              interest:
+                                rates:
+                                  - referentialRateIndexer: PRE_FIXADO
+                                    rate: NA
+                                    applications:
+                                      - interval: 1_FAIXA
+                                        indexer:
+                                          rate: '0.0987'
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        indexer:
+                                          rate: '0.1600'
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        indexer:
+                                          rate: '0.3600'
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        indexer:
+                                          rate: '0.5890'
+                                        customers:
+                                          rate: '0.3000'
+                                    minimumRate: '0.0845'
+                                    maximumRate: '0.9000'
+                                instalmentRates:
+                                  - referentialRateIndexer: PRE_FIXADO
+                                    rate: NA
+                                    applications:
+                                      - interval: 1_FAIXA
+                                        indexer:
+                                          rate: '0.0987'
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        indexer:
+                                          rate: '0.1600'
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        indexer:
+                                          rate: '0.3600'
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        indexer:
+                                          rate: '0.5890'
+                                        customers:
+                                          rate: '0.3000'
+                                    minimumRate: '0.0456'
+                                    maximumRate: '0.0865'
+                                otherCredits:
+                                  - code: SAQUE_A_CREDITO
+                                  - code: PAGAMENTOS_CONTAS
+                              termsConditions:
+                                minimumFeeRate: '0.30'
+                                additionalInfo: NA
+                                elegibilityCriteriaInfo: 'https://empresaa1.com/creditcards_elegibility_criteria'
+                                closingProcessInfo: 'https://empresaa1.com/creditcards_closing_process'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/personal-credit-cards'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/personal-credit-cards'
+                    prev: string
+                    next: string
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/personal-credit-cards'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /business-credit-cards:
     get:
       tags:
@@ -1595,10 +2950,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras.
                         type: object
                         required:
                           - companies
@@ -1662,6 +3019,124 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - name: Empresa A1
+                          cnpjNumber: '45086338000178'
+                          urlComplementaryList: 'https://empresaa1.com/branches-banking'
+                          businessCreditCards:
+                            - name: Cartão Vantagens
+                              identification:
+                                product:
+                                  type: CLASSIC_INTERNACIONAL
+                                creditCard:
+                                  network: MASTERCARD
+                              rewardsProgram:
+                                hasRewardProgram: false
+                              fees:
+                                services:
+                                  - name: ANUIDADE_CARTAO_BASICO_INTERNACIONAL
+                                    code: ANUIDADE_INTERNACIONAL
+                                    chargingTriggerInfo: 'Disponibilização de rede de estabelecimentos afiliados, instalada no País e no exterior, para pagamentos de bens e serviços, cobrada no máximo uma vez a cada doze meses, admitido o parcelamento da cobrança.'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '20.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '35.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 3_FAIXA
+                                        value: '55.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 4_FAIXA
+                                        value: '68.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                    minimum:
+                                      value: '19.50'
+                                      currency: BRL
+                                    maximum:
+                                      value: '72.00'
+                                      currency: BRL
+                              interest:
+                                rates:
+                                  - referentialRateIndexer: PRE_FIXADO
+                                    rate: NA
+                                    applications:
+                                      - interval: 1_FAIXA
+                                        indexer:
+                                          rate: '0.1500'
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        indexer:
+                                          rate: '0.2000'
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 3_FAIXA
+                                        indexer:
+                                          rate: '0.3500'
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 4_FAIXA
+                                        indexer:
+                                          rate: '0.6800'
+                                        customers:
+                                          rate: '0.3500'
+                                    minimumRate: '0.1099'
+                                    maximumRate: '0.7000'
+                                instalmentRates:
+                                  - referentialRateIndexer: PRE_FIXADO
+                                    rate: NA
+                                    applications:
+                                      - interval: 1_FAIXA
+                                        indexer:
+                                          rate: '0.1500'
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        indexer:
+                                          rate: '0.2000'
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 3_FAIXA
+                                        indexer:
+                                          rate: '0.3500'
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 4_FAIXA
+                                        indexer:
+                                          rate: '0.6800'
+                                        customers:
+                                          rate: '0.3500'
+                                    minimumRate: '0.0900'
+                                    maximumRate: '0.7500'
+                                otherCredits:
+                                  - code: SAQUE_A_CREDITO
+                                  - code: PAGAMENTOS_CONTAS
+                              termsConditions:
+                                minimumFeeRate: '0.40'
+                                elegibilityCriteriaInfo: 'https://empresaa1.com/creditcards_elegibility_criteria'
+                                closingProcessInfo: 'https://empresaa1.com/creditcards_closing_process'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/business-credit-cards'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/business-credit-cards'
+                    prev: string
+                    next: string
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/business-credit-cards'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /personal-financings:
     get:
       tags:
@@ -1686,10 +3161,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras.
                         type: object
                         required:
                           - name
@@ -1776,9 +3253,9 @@ paths:
                                                   minItems: 4
                                                   maxItems: 4
                                                 minimum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/minimum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/minimum'
                                                 maximum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/maximum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/maximum'
                                               required:
                                                 - name
                                                 - code
@@ -1864,6 +3341,150 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - cnpjNumber: '50685362000135'
+                          name: Empresa A1
+                          urlComplementaryList: 'https://empresadaorganizacaoa.com/complementarylist'
+                          personalFinancings:
+                            - type: FINANCIAMENTO_AQUISICAO_BENS_VEICULOS_AUTOMOTORES
+                              fees:
+                                services:
+                                  - name: 'Avaliação, Reavaliação e Substituição de Bens Recebidos em Garantia'
+                                    code: AQBAM009
+                                    chargingTriggerInfo: R$ 570.00 Por solicitação
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '45.40'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '57.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '62.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '69.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '39.90'
+                                      currency: BRL
+                                    maximum:
+                                      value: '71.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: PRE_FIXADO
+                                  rate: '0.15'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - ALIENACAO_FIDUCIARIA
+                                - PENHOR
+                              termsConditions: 'https://empresaa1.com/personal_financing'
+                            - type: FINANCIAMENTO_AQUISICAO_BENS_OUTROS_BENS
+                              fees:
+                                services:
+                                  - name: tarifa para abertura de credito
+                                    code: tarifa para abertura de credito
+                                    chargingTriggerInfo: R$ 570.00 Por solicitação
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '500.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '860.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '1090.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '2100.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '430.90'
+                                      currency: BRL
+                                    maximum:
+                                      value: '2200.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.10'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0187'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.2900'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7990'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0056'
+                                  maximumRate: '0.8565'
+                              requiredWarranties:
+                                - ALIENACAO_FIDUCIARIA
+                                - PENHOR
+                              termsConditions: 'https://empresaa1.com/personal_financing'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                    prev: string
+                    next: string
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /business-financings:
     get:
       tags:
@@ -1888,10 +3509,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras.
                         type: object
                         required:
                           - name
@@ -1974,6 +3597,148 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - cnpjNumber: '45086338000178'
+                          name: Empresa A1
+                          urlComplementaryList: 'https://empresadaorganizacaoa.com/complementarylist'
+                          businessFinancings:
+                            - type: FINANCIAMENTO_AQUISICAO_BENS_VEICULOS_AUTOMOTORES
+                              fees:
+                                services:
+                                  - name: 'Avaliação, Reavaliação e Substituição de Bens Recebidos em Garantia'
+                                    code: AQBAM009
+                                    chargingTriggerInfo: R$ 570.00 Por solicitação
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '1000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '1200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '3072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '7020.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '1350.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '8800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.15'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - ALIENACAO_FIDUCIARIA
+                              termsConditions: 'https://empresaa1.com/personal_financing'
+                            - type: FINANCIAMENTO_AQUISICAO_BENS_OUTROS_BENS
+                              fees:
+                                services:
+                                  - name: Avaliação do Bem
+                                    code: NA
+                                    chargingTriggerInfo: 1% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '2000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '5072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '6006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '1890.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '5800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.10'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0187'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.2900'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7990'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0056'
+                                  maximumRate: '0.8565'
+                              requiredWarranties:
+                                - ALIENACAO_FIDUCIARIA
+                              termsConditions: 'https://empresaa1.com/personal_financing'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                    prev: string
+                    next: string
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/<resource>'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /personal-invoice-financings:
     get:
       tags:
@@ -1998,10 +3763,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras.
                         type: object
                         required:
                           - name
@@ -2089,9 +3856,9 @@ paths:
                                                   maxItems: 4
                                                   description: Lista distribuição preços tarifas de serviços
                                                 minimum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/minimum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/minimum'
                                                 maximum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/maximum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/maximum'
                                             minItems: 1
                                         required:
                                           - services
@@ -2150,6 +3917,364 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - name: Empresa A1
+                          cnpjNumber: '45086338000178'
+                          urlComplementaryList: 'https://empresaa1.com/branches-banking'
+                          personalInvoiceFinancings:
+                            - type: DESCONTO_DUPLICATAS
+                              fees:
+                                services:
+                                  - name: Custódia de Duplicatas
+                                    code: NA
+                                    chargingTriggerInfo: 5% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '25.40'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '35.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '52.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '69.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '15.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '87.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.15'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - CESSAO_DIREITOS_CREDITORIOS
+                              termsConditions: 'https://empresaa1.com/personal_invoice_financings'
+                            - type: DESCONTO_CHEQUES
+                              fees:
+                                services:
+                                  - name: 'Custódia de Cheques pré-datados: Inclusão'
+                                    code: NA
+                                    chargingTriggerInfo: 'R$ 0,80'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '345.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '479.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 3_FAIXA
+                                        value: '776.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 4_FAIXA
+                                        value: '1300.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                    minimum:
+                                      value: '110.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '1390.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.10'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.2500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2500'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3500'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - CAUCAO
+                              termsConditions: 'https://empresaa1.com/personal_invoice_financings'
+                            - type: ANTECIPACAO_FATURA_CARTAO_CREDITO
+                              fees:
+                                services:
+                                  - name: Aditamento de recebiveis
+                                    code: NA
+                                    chargingTriggerInfo: 3% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '500.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 2_FAIXA
+                                        value: '860.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.4000'
+                                      - interval: 3_FAIXA
+                                        value: '1090.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 4_FAIXA
+                                        value: '2100.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                    minimum:
+                                      value: '430.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '2200.00'
+                                      currency: BRL
+                                  - name: 'Custódia de Cheques pré-datados: Inclusão'
+                                    code: NA
+                                    chargingTriggerInfo: 2% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '3000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.4000'
+                                      - interval: 3_FAIXA
+                                        value: '4000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 4_FAIXA
+                                        value: '5006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                    minimum:
+                                      value: '2290.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '5800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.13'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.1500'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.2000'
+                                      customers:
+                                        rate: '0.4000'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3500'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.6800'
+                                      customers:
+                                        rate: '0.2500'
+                                  minimumRate: '0.1450'
+                                  maximumRate: '0.6900'
+                              requiredWarranties:
+                                - CAUCAO
+                              termsConditions: 'https://empresaa1.com/personal_invoice_financings'
+                            - type: OUTROS_DIREITOS_CREDITORIOS_DESCONTADOS
+                              fees:
+                                services:
+                                  - name: Documentos em Custódia
+                                    code: NA
+                                    chargingTriggerInfo: NA
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '5072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '7006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '150.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '8800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: OUTRAS_TAXAS_POS_FIXADAS
+                                  rate: '0.20'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.2500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2500'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3500'
+                                  minimumRate: '0.0889'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - CESSAO_DIREITOS_CREDITORIOS
+                              termsConditions: 'https://empresaa1.com/personal_invoice_financings'
+                            - type: OUTROS_TITULOS_DESCONTADOS
+                              fees:
+                                services:
+                                  - name: Documentos em Custódia
+                                    code: NA
+                                    chargingTriggerInfo: NA
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '1000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '1200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 3_FAIXA
+                                        value: '3072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 4_FAIXA
+                                        value: '7020.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                    minimum:
+                                      value: '560.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '8000.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: OUTRAS_TAXAS_POS_FIXADAS
+                                  rate: '0.20'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7680'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.8100'
+                              requiredWarranties:
+                                - CESSAO_DIREITOS_CREDITORIOS
+                              termsConditions: 'https://empresaa1.com/personal_invoice_financings'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/business-invoice-financings'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/business-invoice-financings'
+                    prev: ''
+                    next: ''
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/business-invoice-financings'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /business-invoice-financings:
     get:
       tags:
@@ -2174,10 +4299,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização controladora do grupo de instituições financeiras.
                         type: object
                         required:
                           - name
@@ -2288,6 +4415,364 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - name: Empresa A1
+                          cnpjNumber: '45086338000178'
+                          urlComplementaryList: 'https://empresaa1.com/branches-banking'
+                          businessInvoiceFinancings:
+                            - type: DESCONTO_DUPLICATAS
+                              fees:
+                                services:
+                                  - name: Custódia de Duplicatas
+                                    code: NA
+                                    chargingTriggerInfo: 3% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '35.40'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '55.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '62.40'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '69.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '15.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '87.00'
+                                      currency: BRL
+                              interestRate:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.15'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0100'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.0200'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.0390'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.0455'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0015'
+                                  maximumRate: '0.5100'
+                              requiredWarranties:
+                                - CESSAO_DIREITOS_CREDITORIOS
+                              termsConditions: 'https://empresaa1.com/business_invoice_financings'
+                            - type: DESCONTO_CHEQUES
+                              fees:
+                                services:
+                                  - name: 'Custódia de Cheques pré-datados: Inclusão'
+                                    code: NA
+                                    chargingTriggerInfo: 'R$ 0,80'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '320.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 3_FAIXA
+                                        value: '402.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 4_FAIXA
+                                        value: '606.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                    minimum:
+                                      value: '180.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '780.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.10'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.2500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2500'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3500'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - CAUCAO
+                              termsConditions: 'https://empresaa1.com/business_invoice_financings'
+                            - type: ANTECIPACAO_FATURA_CARTAO_CREDITO
+                              fees:
+                                services:
+                                  - name: Aditamento de recebiveis
+                                    code: NA
+                                    chargingTriggerInfo: 3% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '2000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.4000'
+                                      - interval: 3_FAIXA
+                                        value: '4072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 4_FAIXA
+                                        value: '6006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                    minimum:
+                                      value: '1890.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '7800.00'
+                                      currency: BRL
+                                  - name: Custódia de Duplicatas
+                                    code: NA
+                                    chargingTriggerInfo: 2% do valor do contrato
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '3500.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '4200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 3_FAIXA
+                                        value: '4900.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 4_FAIXA
+                                        value: '5006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                    minimum:
+                                      value: '2290.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '5800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: POS_FIXADO_TR_TBF
+                                  rate: '0.13'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.1500'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.2000'
+                                      customers:
+                                        rate: '0.4000'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3500'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.6800'
+                                      customers:
+                                        rate: '0.2500'
+                                  minimumRate: '0.1450'
+                                  maximumRate: '0.6900'
+                              requiredWarranties:
+                                - CAUCAO
+                              termsConditions: 'https://empresaa1.com/business_invoice_financings'
+                            - type: OUTROS_DIREITOS_CREDITORIOS_DESCONTADOS
+                              fees:
+                                services:
+                                  - name: Documentos em Custódia
+                                    code: NA
+                                    chargingTriggerInfo: 'R$ 0,80'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '2000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '5072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '7006.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '1350.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '8800.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: OUTRAS_TAXAS_POS_FIXADAS
+                                  rate: '0.20'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0350'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.0470'
+                                      customers:
+                                        rate: '0.4000'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.5390'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.6123'
+                                      customers:
+                                        rate: '0.2500'
+                                  minimumRate: '0.0220'
+                                  maximumRate: '0.6510'
+                              requiredWarranties:
+                                - CESSAO_DIREITOS_CREDITORIOS
+                              termsConditions: 'https://empresaa1.com/business_invoice_financings'
+                            - type: OUTROS_TITULOS_DESCONTADOS
+                              fees:
+                                services:
+                                  - name: Documentos em Custódia
+                                    code: NA
+                                    chargingTriggerInfo: NA
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '2000.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '3200.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 3_FAIXA
+                                        value: '5072.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2500'
+                                      - interval: 4_FAIXA
+                                        value: '9008.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                    minimum:
+                                      value: '1560.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '9700.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: OUTRAS_TAXAS_POS_FIXADAS
+                                  rate: '0.20'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0987'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.1600'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.5890'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0456'
+                                  maximumRate: '0.6865'
+                              requiredWarranties:
+                                - CESSAO_DIREITOS_CREDITORIOS
+                              termsConditions: 'https://empresaa1.com/business_invoice_financings'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/business-invoice-financings'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/business-invoice-financings'
+                    prev: ''
+                    next: ''
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/business-invoice-financings'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /personal-unarranged-account-overdraft:
     get:
       tags:
@@ -2312,10 +4797,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização titular das dependências
                         type: object
                         required:
                           - name
@@ -2440,6 +4927,83 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - name: Empresa A1
+                          cnpjNumber: '50685362000135'
+                          urlComplementaryList: 'https://empresadaorganizacaoa.com/complementarylist'
+                          personalUnarrangedAccountOverdraft:
+                            - fees:
+                                priorityServices:
+                                  - name: CONCESSAO_ADIANTAMENTO_DEPOSITANTE
+                                    code: ADIANT_DEPOSITANTE
+                                    chargingTriggerInfo: 'Levantamento de informações e avaliação de viabilidade e de riscos para a concessão de crédito em caráter emergencial para cobertura de saldo devedor em conta de depósitos à vista e de excesso sobre o limite previamente pactuado de cheque especial, cobrada no máximo uma vez nos últimos trinta dias'
+                                    prices:
+                                      - interval: 1_FAIXA
+                                        value: '500.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.1500'
+                                      - interval: 2_FAIXA
+                                        value: '860.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3500'
+                                      - interval: 3_FAIXA
+                                        value: '1090.40'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.2000'
+                                      - interval: 4_FAIXA
+                                        value: '2100.00'
+                                        currency: BRL
+                                        customers:
+                                          rate: '0.3000'
+                                    minimum:
+                                      value: '430.00'
+                                      currency: BRL
+                                    maximum:
+                                      value: '2200.00'
+                                      currency: BRL
+                              interestRates:
+                                - referentialRateIndexer: SEM_INDEXADOR_TAXA
+                                  rate: '0.65'
+                                  applications:
+                                    - interval: 1_FAIXA
+                                      indexer:
+                                        rate: '0.0187'
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      indexer:
+                                        rate: '0.2900'
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      indexer:
+                                        rate: '0.3600'
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      indexer:
+                                        rate: '0.7990'
+                                      customers:
+                                        rate: '0.3000'
+                                  minimumRate: '0.0056'
+                                  maximumRate: '0.8565'
+                              termsConditions: 'https://empresaa1.com/personal_unarranged_account_overdraft'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/personal-unarranged-account-overdraft'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/personal-unarranged-account-overdraft'
+                    prev: ''
+                    next: ''
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/personal-unarranged-account-overdraft'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
   /business-unarranged-account-overdraft:
     get:
       tags:
@@ -2464,10 +5028,12 @@ paths:
                 properties:
                   data:
                     type: object
+                    description: Dados primários da requisição.
                     required:
                       - brand
                     properties:
                       brand:
+                        description: Organização titular das dependências.
                         type: object
                         required:
                           - name
@@ -2542,9 +5108,11 @@ paths:
                                                   maxItems: 4
                                                   description: lista das faixas dos  valores de tarfas cobradas
                                                 minimum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/minimum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/minimum'
+                                                  description: Valor mínimo cobrado para a tarifa de serviços sobre a base de clientes no mês de referência.
                                                 maximum:
-                                                  $ref: '#/paths/~1personal-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/personalAccounts/items/properties/serviceBundles/items/properties/maximum'
+                                                  $ref: '#/paths/~1business-accounts/get/responses/200/content/application~1json/schema/properties/data/properties/brand/properties/companies/items/properties/businessAccounts/items/properties/fees/properties/services/items/properties/maximum'
+                                                  description: Valor máximo cobrado para a tarifa de serviços sobre a base de clientes no mês de referência.
                                               example:
                                                 name: CONCESSAO_ADIANTAMENTO_DEPOSITANTE
                                                 code: ADIANT_DEPOSITANTE
@@ -2597,6 +5165,83 @@ paths:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/links'
                   meta:
                     $ref: '#/paths/~1personal-loans/get/responses/200/content/application~1json/schema/properties/meta'
+                example:
+                  data:
+                    brand:
+                      name: Organização A
+                      companies:
+                        - name: Empresa A1
+                          cnpjNumber: '45086338000178'
+                          urlComplementaryList: 'https://empresaa1.com/branches-banking'
+                          businessUnarrangedAccountOverdraft:
+                            fees:
+                              services:
+                                - name: CONCESSAO_ADIANTAMENTO_DEPOSITANTE
+                                  code: ADIANT_DEPOSITANTE
+                                  chargingTriggerInfo: 'Levantamento de informações e avaliação de viabilidade e de riscos para a concessão de crédito em caráter emergencial para cobertura de saldo devedor em conta de depósitos à vista e de excesso sobre o limite previamente pactuado de cheque especial, cobrada no máximo uma vez nos últimos trinta dias'
+                                  prices:
+                                    - interval: 1_FAIXA
+                                      value: '500.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.1500'
+                                    - interval: 2_FAIXA
+                                      value: '860.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3500'
+                                    - interval: 3_FAIXA
+                                      value: '1090.40'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.2000'
+                                    - interval: 4_FAIXA
+                                      value: '2100.00'
+                                      currency: BRL
+                                      customers:
+                                        rate: '0.3000'
+                                  minimum:
+                                    value: '430.00'
+                                    currency: BRL
+                                  maximum:
+                                    value: '2200.00'
+                                    currency: BRL
+                            interestRates:
+                              referentialRateIndexer: SEM_INDEXADOR_TAXA
+                              rate: '0.65'
+                              applications:
+                                - interval: 1_FAIXA
+                                  indexer:
+                                    rate: '0.0187'
+                                  customers:
+                                    rate: '0.1500'
+                                - interval: 2_FAIXA
+                                  indexer:
+                                    rate: '0.2900'
+                                  customers:
+                                    rate: '0.3500'
+                                - interval: 3_FAIXA
+                                  indexer:
+                                    rate: '0.3600'
+                                  customers:
+                                    rate: '0.2000'
+                                - interval: 4_FAIXA
+                                  indexer:
+                                    rate: '0.7990'
+                                  customers:
+                                    rate: '0.3000'
+                              minimumRate: '0.0056'
+                              maximumRate: '0.8565'
+                            termsConditions: 'https://empresaa1.com/business_unarranged_account_overdraft'
+                  links:
+                    self: 'https://api.banco.com.br/open-banking/products-services/v1/business-unarranged-account-overdraft'
+                    first: 'https://api.banco.com.br/open-banking/products-services/v1/business-unarranged-account-overdraft'
+                    prev: ''
+                    next: ''
+                    last: 'https://api.banco.com.br/open-banking/products-services/v1/business-unarranged-account-overdraft'
+                  meta:
+                    totalRecords: 1
+                    totalPages: 1
 components:
   securitySchemes:
     APIKey1:

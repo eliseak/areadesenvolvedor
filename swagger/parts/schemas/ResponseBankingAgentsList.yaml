@@ -6,11 +6,13 @@ required:
 properties:
   data:
     type: object
+    description: Dados primários da requisição.
     required:
       - brand
     properties:
       brand:
         $ref: ./BankingAgentsBrand.yaml
+        description: Organização controladora do grupo de instituições financeiras.
   links:
     $ref: ./Links.yaml
   meta:
