@@ -12,7 +12,6 @@ properties:
     properties:
       brand:
         $ref: ./BankingAgentsBrand.yaml
-        description: Organização controladora do grupo de instituições financeiras.
   links:
     $ref: ./Links.yaml
   meta:
@@ -31,7 +30,7 @@ example:
                 - identification:
                     corporationName: "Empresa Correspondente A"
                     groupName: "Grupo Master"
-                    cnpjNumber: "02345876000299"
+                    cnpjNumber: "23458760002990"
                     isUnderestablishment: true
                   locations:
                     - postalAddress:

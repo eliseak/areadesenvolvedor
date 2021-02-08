@@ -6,7 +6,6 @@ required:
   - prices
   - minimum
   - maximum
-  - customers
 properties:
   name:
     type: string

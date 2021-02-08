@@ -1,7 +1,8 @@
 type: object
+description: Lista de adiantamento a depositante
 required:
   - fees
-  - interestRate
+  - interestRates
   - termsConditions
 properties:
   fees:

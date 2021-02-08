@@ -33,17 +33,17 @@ paths:
             default: 25
             minimum: 1
         - in: query
+          description: 'O período a ser retornado. Se não for informado, o padrão será ALL'
           name: period
           schema:
             type: string
             enum:
               - CURRENT
               - ALL
-          required: false
-          description: |
-            Período a ser consultado
-              * `CURRENT` - Métricas do dia atual.
-              * `ALL` - Métricas de todo o período disponível.
+            description: |
+              Período a ser consultado
+                 `CURRENT` - Métricas do dia atual.
+                 `ALL` - Métricas de todo o período disponível.
       responses:
         '200':
           description: Dados das métricas
@@ -73,8 +73,8 @@ paths:
                         description: Data e hora que as métricas foram requisitadas.
                         format: date-time
                       availability:
-                        description: Índices de disponibilidades das APIs.
                         type: object
+                        description: Índices de disponibilidades das APIs.
                         required:
                           - uptime
                           - downtime
@@ -130,8 +130,8 @@ paths:
                                     type: integer
                                     description: Quantidade de segundos de indisponibilidade do endpoint.
                       invocations:
-                        description: Número de chamadas em cada nível e prioridade.
                         type: object
+                        description: Número de chamadas em cada nível e prioridade.
                         required:
                           - unauthenticated
                           - highPriority
@@ -199,8 +199,8 @@ paths:
                                 items:
                                   type: integer
                       averageResponse:
-                        description: Tempo médio de reposta em segundos em cada nível e prioridade.
                         type: object
+                        description: Tempo médio de reposta em segundos em cada nível e prioridade.
                         required:
                           - unauthenticated
                           - highPriority
@@ -268,8 +268,8 @@ paths:
                                 items:
                                   type: integer
                       averageTps:
-                        description: Transações em média por segundo.
                         type: object
+                        description: Transações em média por segundo.
                         required:
                           - currentDay
                           - previousDays
@@ -283,8 +283,8 @@ paths:
                             items:
                               type: integer
                       peakTps:
-                        description: Número máximo de transações por segundo.
                         type: object
+                        description: Número máximo de transações por segundo.
                         required:
                           - currentDay
                           - previousDays
@@ -298,8 +298,8 @@ paths:
                             items:
                               type: integer
                       errors:
-                        description: Número de chamadas que resultaram em erro devido ao servidor.
                         type: object
+                        description: Número de chamadas que resultaram em erro devido ao servidor.
                         required:
                           - currentDay
                           - previousDays
@@ -313,8 +313,8 @@ paths:
                             items:
                               type: integer
                       rejections:
-                        description: Número de chamadas rejeitadas devido aos limites.
                         type: object
+                        description: Número de chamadas rejeitadas devido aos limites.
                         required:
                           - currentDay
                           - previousDays
@@ -330,36 +330,43 @@ paths:
                   links:
                     type: object
                     description: Referências para outros recusos da API requisitada.
+                    required:
+                      - self
                     properties:
                       self:
                         type: string
-                        description: URL da página atualmente requisitada
+                        format: URIString
+                        description: URI completo que gerou a resposta atual.
                         example: 'https://api.banco.com.br/open-banking/<api>/v1/<resource>'
                       first:
                         type: string
-                        description: URL da primeira página de registros
+                        format: URIString
+                        description: URI da primeira página que originou essa lista de resultados. Restrição - Obrigatório quando não for a primeira página da resposta
                         example: 'https://api.banco.com.br/open-banking/<api>/v1/<resource>'
                       prev:
                         type: string
-                        description: URL da página anterior de registros
+                        format: URIString
+                        description: "URI da página anterior dessa lista de resultados. Restrição - \tObrigatório quando não for a primeira página da resposta"
                       next:
                         type: string
-                        description: URL da próxima página de registros
+                        format: URIString
+                        description: URI da próxima página dessa lista de resultados. Restrição - Obrigatório quando não for a última página da resposta
                       last:
                         type: string
-                        description: URL da última página de registros
+                        format: URIString
+                        description: URI da última página dessa lista de resultados. Restrição - Obrigatório quando não for a última página da resposta
                         example: 'https://api.banco.com.br/open-banking/<api>/v1/<resource>'
                   meta:
                     type: object
-                    descripion: Meta informações referente a API requisitada.
+                    description: Meta informações referente a API requisitada.
                     properties:
                       totalRecords:
                         type: integer
-                        description: Total de registros encontrados
+                        description: Número total de registros no resultado
                         example: 1
                       totalPages:
                         type: integer
-                        description: Total de páginas para os registros encontrados
+                        description: Número total de páginas no resultado
                         example: 1
                     required:
                       - totalRecords
